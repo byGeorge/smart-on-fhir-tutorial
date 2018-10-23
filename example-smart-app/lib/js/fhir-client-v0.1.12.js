@@ -17315,7 +17315,7 @@ function providers(fhirServiceUrl, provider, callback, errback){
   );
 };
 
-var noAuthFhirProvider = function(serviceUrl){
+var noAuthFhirProvider = function(serviceUrl){ alert(serviceURL);
   return {
     "oauth2": null,
     "url": serviceUrl
