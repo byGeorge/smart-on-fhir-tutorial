@@ -1,13 +1,13 @@
-(function(window){ alert("entering function");
+(function(window){ 
   window.extractData = function() {
     var ret = $.Deferred();
 
     function onError() { 
-      console.log('Loading error', arguments); alert("error");
+      console.log('Loading error', arguments); 
       ret.reject();
     }
 
-    function onReady(smart)  { alert("ready");
+    function onReady(smart)  { 
       if (smart.hasOwnProperty('patient')) {
         var patient = smart.patient;
         var pt = patient.read();
@@ -24,7 +24,7 @@
 
         $.when(pt, obv).fail(onError);
 
-        $.when(pt, obv).done(function(patient, obv) { alert("done");
+        $.when(pt, obv).done(function(patient, obv) { 
           var byCodes = smart.byCodes(obv, 'code');
           var gender = patient.gender;
 
