@@ -95,6 +95,7 @@
             return coding.code == typeOfPressure;
           });
         });
+      }
       catch(e) {return false;}
       if (BP) {
         observation.valueQuantity = BP.valueQuantity;
