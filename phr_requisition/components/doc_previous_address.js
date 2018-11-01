@@ -1,0 +1,90 @@
+/********************************************************************************
+* Handles the popup menus that appear when the "View Previous Addresses" button	* 
+* is clicked. Allows user to select a physician's previous address.				* 
+* Dependencies: Jquery, JQuery UI												*
+* Author: George Roberts 6/11/2018												*
+*********************************************************************************/
+var DocPreviousAddress = function(){
+	$("#physician_address_search").dialog({
+		autoOpen: false,
+		modal: true,
+		width: "80%"
+	});
+	var addresses = [];
+	return {
+		// displays the results of ccl called by OpenSearch
+		DisplayResults: function(data){
+			var a_html = ["<table><thead><tr><th></th><th>Active?</th><th>NPI</th><th>Address</th><th>Phone</th></tr></thead><tbody>"]
+			var info = [];
+			try {
+				info = JSON.parse(data).RECORD_DATA.INFO;
+				for (var i = 0; i < info.length; i++){
+					a_html.push("<tr><td>", i + 1, "</td>");
+					if (info[i].ACTIVE === 1)
+						a_html.push("<td>&#9745</td>");
+					else
+						a_html.push("<td></td>");
+					a_html.push("<td>",info[i].NPI,"</td>");
+					a_html.push("<td>",info[i].ADDR1)
+					if (info[i].ADDR2 !== "")
+						a_html.push("<br />", info[i].ADDR2);
+					if (info[i].CITY !== "" || info[i].STATE !== "" || info[i].ZIP !== "")
+						a_html.push("<br />");
+					a_html.push(info[i].CITY);
+					if (info[i].CITY !== "" && info[i].STATE !== "")
+						a_html.push(", ");
+					a_html.push(info[i].STATE);
+					if (info[i].ZIP !== "")
+						a_html.push(" ");
+					a_html.push(info[i].ZIP);
+					if (info[i].COUNTY !== "")
+						a_html.push("<br />County: ", info[i].COUNTY);
+					a_html.push("</td><td>", info[i].PHONE,"</td></tr>");
+				}
+				addresses = info;
+			}
+			catch(e) {
+				a_html.push("<tr>Error retrieving addresses.</tr>");
+			}
+			a_html.push("</tbody></table>");
+			if (info.length > 0)
+				$("#physician_search_results").html(a_html.join(''));
+			else {
+				$("#physician_search_results").html("<p>No results found</p>");
+				addresses = [];
+			}
+			$("#physician_search_results table tbody").on("click", "tr", function(){
+				$(".physician_search_selected").removeClass("physician_search_selected");
+				$(this).addClass("physician_search_selected");
+			});
+			WaitScreen.Stop("Getting Previous Physician's Addresses");
+		},
+		// called by button click
+		OpenSearch: function(){ 
+			if (DataHandler.GetPatientData().PATIENT_LAST_NAME !== undefined){
+				$('#physician_address_search').dialog('open');
+				$("#physician_search_results").html("<p>Loading Results<p>");
+				DataHandler.GetPhyPrevAddrs(DocPreviousAddress.DisplayResults);
+				WaitScreen.Start("Getting Previous Physician's Addresses");
+			}
+			else 
+				alert("No order selected.");
+		},
+		// chooses address and inserts info onto page
+		SelectAddress: function(){
+			var address = addresses[$(".physician_search_selected").index()];
+            $("#physiciannpi").val(address.NPI);
+            $("#physicianzip").val(address.ZIP);
+            $("#physicianstreetaddress1").val(address.ADDR1);
+            $("#physicianstreetaddress2").val(address.ADDR2);
+            $("#physiciancity").val(address.CITY);
+            $("#physicianstate").html(PHRController.MakeOptionList(DataHandler.GetStates(), address.STATE));
+            if ($("#patientstate").val() === "")
+                PHRController.SetReportState(address.STATE);
+            DataHandler.GetRequiredFields(address.STATE, PHRController.HighlightRequiredFields);
+            $("#physiciancounty").html(PHRController.MakeOptionList(DataHandler.GetCounties(address.STATE), address.COUNTY));
+            $("#physicianphone").val(address.PHONE);
+			$('#physician_address_search').dialog('close');
+		}
+	}
+}();

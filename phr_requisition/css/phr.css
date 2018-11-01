@@ -1,0 +1,546 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+body {
+	line-height: 1;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+blockquote, q {
+	quotes: none;
+}
+
+	blockquote:before, blockquote:after,
+	q:before, q:after {
+		content: '';
+		content: none;
+	}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/****************************************
+			MPAGE STYLING
+*****************************************/
+
+/***************** Main Page *****************/
+body{
+	background-color: #53565A;
+	font-family:'Roboto', Arial, Helvetica, sans-serif;
+}
+
+.all_data_wrapper {
+	display: flex;
+	padding: 1em;
+	align-content: center;
+	flex-flow: column;
+	background-color: #53565A;
+}
+
+.all_data_wrapper .data_wrapper h2{
+	width: 100%;
+	margin-bottom: 1em;
+	border-bottom: 1px solid #a6192e;
+	font-weight:bold;
+
+}
+
+.data_wrapper {
+	border: 1px solid grey;
+	border-radius: .2em;
+	display: inline-flex;
+	flex-flow: row wrap;
+	padding: 1em;
+	margin: 0 auto;
+	background-color: #efefef;
+	box-shadow: inset 0 .1rem .2rem white, inset 0 -.1rem .2rem grey;
+}
+
+.all_data_wrapper > h1 {
+	font-size: 1.5rem;
+	background-color: #efefef;
+	border:1px solid grey;
+	border-bottom-color: #efefef;
+	position: relative;
+	margin-top: .5rem;
+	left: 3rem;
+	padding: .4rem 1rem .2rem 1rem;;
+	border-top-left-radius: 1rem 100%;
+	border-top-right-radius: 1rem 100%;
+	width: 18rem;
+	z-index: 1;
+	box-shadow: inset 0 .1rem .2rem white, 0 .5rem #efefef;
+	color: black;
+}
+
+.all_data_wrapper > h1.up_arrow {
+	margin-top: 2.7rem;
+}
+
+.all_data_wrapper .accession_info {
+	position: fixed;
+	left: calc(60% - 2rem);
+	top: .1rem;
+	background-color: #efefef;
+	border: 1px solid #a6192e;
+	z-index: 100;
+	width: calc(40% - 2rem);
+	border-radius: 1rem;
+	padding: .4rem;
+	box-shadow: inset .05rem .05rem .05rem white, inset 0 .1rem .1rem #FABBCB, inset 0 -.1rem .1rem #76232F;
+}
+
+.all_data_wrapper .accession_info.button_lower {
+	top: 4.1rem;
+}
+
+.accession_info {
+	font-weight: bold;
+}
+
+.accession_info span {
+	font-weight: normal;
+}
+
+
+.all_data_wrapper > div:last-child {
+	margin-bottom: 50px;
+}
+
+.phr_data input, .phr_data select {
+	width: 90%;
+	border-radius: .1em;
+}
+
+	.phr_data input.phr_readonly, .phr_data select.phr_readonly {
+		background-color: #efefef;
+		font-weight: bold;
+		color: #53565A;
+	}
+
+.phr_data {
+	height: 4.5rem; 
+	min-width: 8rem;
+	width: 20%;
+	max-width: 14rem;
+	background-color: #efefef;
+	border: 1px solid lightgrey;
+	padding: .5rem;
+	margin: .2rem;
+	border-radius: 3px;
+	box-shadow: inset 0 .1rem .2rem white, inset 0 -.1rem .2rem grey;
+}
+
+.phr_data button{
+	border: 1px solid #555555;
+	background-color: #fff;
+	box-shadow: inset 0 -.5rem .1rem #ddd;
+	padding: .1rem .5rem;
+	border-radius: 3px;
+}
+
+/***************** Top/Bottom Bars *****************/
+
+.patient_search {
+	padding: 1rem;
+	width: 100%;
+	position: fixed;
+	top: 4rem;
+	border: 1px solid grey;
+	height: 1.5rem;
+	background-color: white;
+	box-shadow: .1rem .1rem .4rem #53565A;
+	z-index: 100;
+	display: none;
+}
+
+	.patient_search input {
+		border-radius: 3px;
+	}
+
+.confirm_buttons {
+	width: 100%;
+	position: fixed;
+	padding: 1rem;
+	border: 1px solid grey;
+	top: calc(100% - 50px);
+	min-height: 50px;
+	background-color: white;
+	flex-flow: row-reverse;
+	box-shadow: -.1rem -.1rem .4rem #53565A;
+}
+
+	.confirm_buttons button, .patient_search button {
+		border-radius: 3px;
+		box-shadow: inset 0px -0.5rem 0.1rem #ddd; 
+		border: 1px solid #53565A;
+		padding: .2rem .6rem;
+		margin-right: .1rem;
+		overflow: hidden;
+		font-size: 1rem;
+	}
+
+.required {
+	background-color: yellow;
+}
+
+.toggle_arrow {
+	position: fixed;
+	left: calc(100% - 2.1rem);
+	box-shadow: inset 0px -0.5rem 0.1rem #ddd;
+	z-index: 1001;
+	background-color: white;
+	width: .75rem;
+	height: 1rem;
+	border-radius: .3rem;
+	border: 1px solid #53565A;
+}
+
+#header_arrow {
+	top: 1.5rem;
+	z-index: 101;
+	display: none;
+}
+
+#footer_arrow {
+	top: calc(100% - 1.5rem);
+}
+
+#accession_orders div{
+	width: 100%;
+}
+
+#accession_orders ul{
+	padding-top: .5rem;
+	padding-bottom: .5rem;
+	margin-top: .5rem;
+	margin-bottom: .5rem;
+	border-top: 1px solid darkgrey;
+	border-bottom: 1px solid darkgrey;
+}
+
+#accession_orders li {
+	border: 1px solid grey;
+	border-radius: 3px;
+	margin: .2rem;
+}
+
+#editdoctors {
+	display: none;
+}
+
+#help_page {
+	position: fixed;
+	left: calc(100% - 1.25rem);
+	box-shadow: inset 0px -0.5rem 0.1rem #ddd;
+	z-index: 101;
+	background-color: white;
+	width: 1rem;
+	height: 1rem;
+	border-radius: .3rem;
+	border: 1px solid #53565A;
+	top: 1.5rem;
+	font-size: .90rem;
+}
+#help_page a, #help_page a:link, #help_page a:visited {
+	text-decoration: none;
+	color: black;
+	position: relative;
+	left: .05rem;
+}
+
+#help_page, #header_arrow {
+	transition: all 0.5s linear;
+}
+
+/***************** Zipcode dialog *****************/
+.no-close .ui-dialog-titlebar-close {
+	display: none;
+}
+
+/***************** Employer Search Popup *****************/
+.employer_search_buttons{
+	width: 20%;
+	min-width: 7rem; 
+	padding: .1rem;
+	border: 1px solid lightgrey;
+	border-radius: 3px;
+}
+
+#employer_search{
+	display: inline-flex;
+	max-width: 95%;
+	min-width: 95%;
+	overflow: auto;
+}
+
+.employer_search_buttons button {
+	width: 100%;
+	min-width: 7rem;
+	border: 1px solid #555555;
+	background-color: #fff;
+	box-shadow: inset 0 -.5rem .1rem #ddd;
+	padding: .1rem .5rem;
+	border-radius: 3px;
+}
+
+.employer_search_tabs {
+	width: 80%;
+}
+
+#employer_search_find input {
+	width: 100%;
+	margin-bottom: .2rem;
+	border-radius: 3px;
+}
+
+#employer_search_display {
+	min-height: 2rem;
+	width: 100%;
+	box-shadow: inset .1em .1em #555555, .1em .1em lightgrey;
+	border-radius: 3px;
+	overflow-y: hidden;
+	padding: .5rem;
+	max-height: 20rem;
+	font-size: 80%;
+}
+
+#employer_search_display ul.emp_addr_list li{
+	border-radius: 3px;
+}
+
+#employer_search_display li:before {
+	content: url("I:/WININTEL/static_content/phr_requisition/images/mailbox.ico");
+	position: relative;
+	top: .3rem;
+}
+
+#employer_search_display ul.emp_addr_list li.emp_addr_item.selected {
+	background-color: #a6192e;
+	box-shadow: inset .05rem .05rem .05rem white, inset 0 .1rem .1rem #FABBCB, inset 0 -.1rem .1rem #76232F;
+	color: white;
+}
+
+#employer_search_display ul.emp_addr_list li.emp_addr_item.selected:hover{
+	color: lightgrey;
+}
+
+#employer_search_display ul.emp_addr_list li:hover {
+	background-color: lightgrey;
+}
+
+#employer_search_navbar{
+	font-size: 1rem;
+}
+
+.employer_navbar_arrow{
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+
+#new_empl_name {
+	width: 100%;
+	background-color: white;
+	border-radius: 3px;
+}
+
+.new_empl_addr, .new_empl_phone {
+	border: 1px solid lightgrey;
+	padding: 1rem;
+	border-radius: 3px;
+	margin: .5rem 0;
+	overflow: auto;
+}
+
+.new_empl_addr table{
+	width: 100%;
+}
+
+	.new_empl_addr input, .new_empl_phone input {
+		background-color: white;
+		border-radius: 3px;
+	}
+
+	.new_empl_addr input {
+		width: 100%;
+	}
+
+	.new_empl_addr input#new_empl_zip {
+		width: 40%;
+	}
+
+	.new_empl_addr select#new_empl_state {
+		width: 30%;
+		background-color: white;
+		border-radius: 3px;
+		margin-right: 1.5rem;
+	}
+
+	.new_empl_addr td:first-child {
+		width: 30%; 
+	}
+
+	.new_empl_addr td:last-child {
+		width: 70%;
+	}
+
+.new_empl_ph_inner {
+	display: inline-flex;
+	flex-flow: wrap;
+	width: 100%;
+}
+
+.new_empl_phone select{
+	border-radius: 3px;
+}
+
+#new_empl_ph_format {
+	min-width: 5rem;
+	width: 35%;
+}
+
+.new_empl_ph_inner div {
+	width: 30%;
+	min-width: 5rem;
+	margin-right: 1%;
+}
+
+.phr_required {
+	box-shadow: inset 0 .1rem .2rem #ffff99, inset 0 -.1rem .2rem #cc9900, inset 0 0 .1rem .1rem yellow;
+}
+
+	.phr_required input, .phr_required select {
+		background-color: lemonchiffon;
+	}
+
+/***************** Patient Search Dialog *****************/
+
+#patient_search_menu .patient_search_inputs div {
+	margin: auto;
+	padding: .5rem;
+	margin: .5rem;
+}
+
+	#patient_search_menu .patient_search_inputs {
+		display: inline-flex;
+		flex-wrap: wrap;
+		justify-content: center;
+	}
+
+	#patient_search_menu h2 {
+		border-bottom: 1px solid #555;
+		margin-bottom: .3rem;
+	}
+
+#patient_search_results {
+	border: 1px solid #555;
+	overflow-y: auto;
+	max-height: 15rem;
+	padding: .5rem;
+	border-radius: 3px;
+}
+
+#patient_search_results li {
+	padding: .2rem .1rem;
+	border: 1px solid lightgrey;
+	border-radius: 3px;
+}
+
+.search_selected {
+	background-color:#A6192e;
+	color: white;
+	border-raidus: 1px;
+}
+
+#order_select_menu li{
+	border: 1px solid grey;
+	padding: .1rem;
+	border-radius: 3px;
+}
+
+#order_select_menu li:not(last-child){
+	margin-bottom: .2rem;
+}
+
+
+/***************** Physician Search *****************/
+
+#physician_search_results {
+	max-height: 15rem;
+	overflow: auto;
+	border: 1px solid darkgrey;
+	border-radius: 3px;
+	min-height: 300px;
+	margin-top: .2rem;
+	margin-bottom: .2rem;
+	padding: .1rem;
+}
+
+#physician_search_results table {
+	width: 100%;
+}
+
+#physician_search_results tr:nth-child(odd):not(.physician_search_selected) {
+	background-color: lightgrey;
+}
+
+#physician_search_results th {
+	background-color: #A6192e;
+	color: white;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	padding: .3rem; 
+	box-shadow: inset 0 .3rem .6rem #d87080, inset 0 -.3rem .6rem #8e1527;
+}
+
+#physician_search_results td {
+	padding: .1rem;
+}
+
+.physician_search_selected {
+	background-color: #A6192e;
+	color: white;
+}
+
+
+/***************** Etc *****************/
+.bold {
+	font-weight: bold;
+}
+
+.hidden {
+	display: none;
+}

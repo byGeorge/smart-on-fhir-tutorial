@@ -1,0 +1,460 @@
+/********************************************************************************
+* Handles the popup menus that appear when the "Search for Employer" button is	* 
+* clicked. Allows new employers to be added.									* 
+* Dependencies: Jquery, JQuery UI												*
+* Author: George Roberts 6/11/2018												*
+*********************************************************************************/
+var EmployerSearchMenu = function () {
+	var employer_search_page_number = 1; // tracks current page on employer search results
+	var employer_search_total_records = 0; // tracks total results from query
+	var employer_search_total_pages = 0; // tracks total number of pages
+	var employer_search_multiple = 10; // number of results on page
+	var employers = []; // employer data from query
+	var last_key_pressed; // used in ShowEmployerSearch to determine if the last key was alphanumeric
+
+	// tab setup, change behaviour depending on which tab is selected
+	$(".employer_search_tabs")
+		.tabs()
+		.on("click", function () {
+			var tab_num = $(".employer_search_tabs").tabs("option", "active");
+			if (tab_num === 0)
+				$("#control_r").html("Sea<u>r</u>ch");
+			else if (tab_num === 1)
+				$("#control_r").html("Add Employe<u>r</u>");
+		});
+	
+	//binding events
+	$(window)
+		.resize(function () {
+			var $emp = $("#employer_search").closest(".ui-dialog");
+			var w = $(window).width() - $(window).scrollLeft();
+			if ($emp.width() > w) {
+				$emp.css({ "width": "90%", "left": "5%" });
+			}
+		})
+		.keydown(function (e) {
+			if ($("#employer_search").is(":visible")) {
+				var tab_selected = $(".employer_search_tabs").tabs("option", "active");
+				if (e.which === 73 && e.altKey)  // alt + i
+					$(".employer_search_tabs ul").find(".underscore_i").click();
+				else if (e.which === 78 && e.altKey) { // alt + n
+					$(".employer_search_tabs ul").find(".underscore_n").click();
+				}
+				else if (e.which === 79 && e.altKey) // alt + o
+					EmployerSearchMenu.InsertEmployer();
+
+				else if (e.which === 82 && e.altKey) { // alt + r
+					$("#control_r").click();
+				}
+				else if (e.which === 13 && tab_selected === 1) {
+					EmployerSearchMenu.InsertEmployer();
+				}
+				else if (e.which === 13 && tab_selected === 0 && 
+						($("#employer_search_display li.selected").length === 0 || $("#emp_ok").is(":disabled")) ) {
+					$("#control_r").click();
+				}
+				else if (e.which === 13 && tab_selected === 0 && !$("#emp_ok").is(":disabled")) {
+					EmployerSearchMenu.InsertEmployer();
+				}
+			}
+			else {
+				if (e.which === 82 && e.altKey) // alt + r
+					EmployerSearchMenu.ShowEmployerSearch();
+			}
+		})
+		.on("ClearPage", function(){
+			$("#emp_ok").attr("disabled", "disabled");
+			$("#employer_search input, #employer_search select").val("");
+			$("#employer_search_display").html("No employers to display.");
+			$("#new_empl_country").val("USA");
+			$("#new_empl_ph_format").val("United States");
+			
+		});
+		$("#employer_search_find input").on("keydown", function(e){
+			if (e.which !== 13)
+				$("#emp_ok").attr("disabled", "disabled");
+		});
+	// Employer search window starts out too small and doesn't resize adequately. This will start it larger.
+	var w = $(window).width();
+	$("#employer_search").dialog({
+		autoOpen: false,
+		modal: true,
+		minWidth: 330,
+		minHeight: 500,
+		width: w * .9
+	});
+
+	// mask to force consistent styling
+	PHRController.CreateMask("#employer_zipcode_search", "##### - ####");
+	PHRController.CreateMask("#new_empl_zip", "##### - ####");
+	PHRController.CreateMask("#new_empl_phone", "(###) ###-####");
+	$("#new_empl_ext").on("keyup", function(){
+		if ($(this).val().length > 41)
+			$(this).val($(this).val().substring(0,41));
+	});
+	// removes US formatting for phone numbers
+	$("#new_empl_ph_format").change(function () {
+		if ($(this).val() === "United States") {
+			var $new_ph = $("#new_empl_phone");
+			$new_ph.val($new_ph.val().replace(/[^0-9]/gi, ""));
+			PHRController.CreateMask("#new_empl_phone", "(###) ###-####");
+			$new_ph.focus().trigger("keyup");
+		}
+		else {
+			$("#new_empl_phone").off("keyup");
+		}
+	});
+	
+	var ok_abled = false;
+	$("#li_esa").on("click", function(){ 
+		if ($("#emp_ok").prop("disabled"))
+			ok_abled = false;
+		else
+			ok_abled = true;
+		$("#emp_ok").prop("disabled", true);
+	});
+	
+	$("#li_esf").on("click", function(){ 
+		$("#emp_ok").prop("disabled", !ok_abled);
+	});
+	
+	return {
+		// activated by clicking on the Search for Employer button
+		ShowEmployerSearch: function () {
+			// if there was a recent search
+			if (employers !== []){
+				$("#employer_search").dialog("open");
+				setTimeout($("#employer_name_search").focus(), 200);
+			}
+			// if there is an active patient
+			else if (DataHandler.GetPatientData().PATIENT_LAST_NAME !== undefined && $("#patientlastname") !== ""){
+				employers = [];
+				$("#new_empl_state").html(PHRController.MakeOptionList(DataHandler.GetStates()));
+				$("#new_empl_county").html(PHRController.MakeOptionList(DataHandler.GetCounties()));
+				$("#new_empl_country").html(PHRController.MakeOptionList(DataHandler.GetCountries(), "USA"));
+				$("#employer_search").dialog("open");
+				$(".employer_search_tabs").tabs("option", "active", 0); 
+				setTimeout(function(){ $("#employer_name_search").focus(); }, 200);
+				$(".employer_search_input")
+					.off("keyup")
+					.keyup(function (e) {
+						// if the person has pressed enter and the last key pressed wasn't a number or letter, escape delete, or 
+						// backspace (we expect that they tried to navigate the results menu)
+						if (e.which === 13 && employer_search_total_records > 0 && (last_key_pressed < 46 || last_key_pressed > 90
+								|| last_key_pressed !== 32 || last_key_pressed !== 10 || last_key_pressed !== 127))
+							EmployerSearchMenu.InsertEmployer();
+						// otherwise, they probably edited an entry field and are pressing enter to search
+						else if (e.which === 13) 
+							EmployerSearchMenu.DoEmployerSearch();
+						// If they backspce or delete all entries, delete all employer results
+						else if (e.which === 8 || e.which === 46) { 
+							var inputs = $(".employer_search_input");
+							var blank = true;
+							for (var i = 0; i < inputs.length; i++) {
+								if ($(inputs[i]).val() !== "")
+									blank = false;
+							}
+							if (blank) {
+								employers = [];
+								$("#employer_search_display").html("No employers to display.");
+							}
+						}
+						// these next few are navigation for the employer results list
+						else if (e.which === 40 || e.which === 98) { // down key
+							var pos = $("#employer_search_display .employers_list").accordion("option", "active");
+							if (pos + 1 > 10 * employer_search_page_number - 10 && pos + 1 < 10 * employer_search_page_number)
+								$("#employer_search_display .employers_list").find("h2").eq(pos + 1).click();
+						}
+						else if (e.which === 38 || e.which === 104) { // up key
+							var pos = $("#employer_search_display .employers_list").accordion("option", "active");
+							if (pos - 1 >= 10 * employer_search_page_number - 10 && pos - 1 < 10 * employer_search_page_number)
+								$("#employer_search_display .employers_list").find("h2").eq(pos - 1).click();
+						}
+						else if (e.which === 37 || e.which === 100) //left key
+							EmployerSearchMenu.EmployerSearchPrev();
+						else if (e.which === 39 || e.which === 102) // right key
+							EmployerSearchMenu.EmployerSearchNext();
+						else
+							employers = [];
+						last_key_pressed = e.which;
+					});
+				}
+				else // no active patient
+					alert("Please select an order before attempting to assign an employer.");
+		},
+		// Puts employer into correct fields.
+		InsertEmployer: function () {
+			var page = $(".employer_search_tabs").tabs("option", "active");
+			if (page === 0) { // if using existing employer
+				try {
+					var emp = employers[$("#employer_search_display .employers_list").accordion("option", "active")];
+					$("#employername").val(emp.NAME);
+					var emp_addr = emp.ADDRESSES[$("#employer_search_display .employers_list li.selected").index()];
+					$("#employerzip").val(emp_addr.ZIP);
+					$("#employerstreetaddress1").val(emp_addr.ADDR1);
+					$("#employerstreetaddress2").val(emp_addr.ADDR2);
+					$("#employercity").val(emp_addr.CITY);
+					$("#employerstate").val(emp_addr.STATE);
+					$("#employerphone").val(emp_addr.PHONE);
+					$("#employer_search").dialog("close");
+					$("#occupation").focus();
+					DataHandler.SetEmployer(emp);
+				}
+				catch (e) {
+					var $emp_srch = $(".employer_search_input");
+					var prev_bg = $emp_srch.css("background-color");
+					$emp_srch.animate({ "background-color": "yellow" }, 500).animate({ "background-color": prev_bg }, 500);
+				}
+			}
+			else if (page === 1) { //if adding a new employer
+				DataHandler.GetEmployerExists($("#new_empl_name").val(), EmployerSearchMenu.InsertNewEmployer);
+			}
+		},
+		InsertNewEmployer: function(return_data){
+			var exists = false;
+			var num = (JSON.parse(return_data)).RECORD_DATA.EMPLOYER_EXISTS;
+			if (num === 1)
+				exists = true;
+			var $name = $("#new_empl_name");
+			var name = $("#new_empl_name").val();
+			var cont_add = !exists; // if it doesn't already exist, continue adding employer
+			if (name === ""){ //name is required
+				cont_add = false;
+				var prev_bg = $name.css("background-color");
+				$name.animate({ "background-color": "yellow" }, 500).animate({ "background-color": prev_bg }, 500);
+			}
+			else if (exists){
+				cont_add = window.confirm(name + " already exists in the system.\n\n Do you wish to add the current organization?");
+			}
+			
+			
+			if (cont_add){
+				var phone_no_ext = $("#new_empl_phone").val();
+				var phone = phone_no_ext;
+				if (phone_no_ext === undefined) {
+					phone_no_ext = "";
+				}
+				else {
+					var ext = $("#new_empl_ext").val();
+					if (ext !== undefined && ext.length > 0)
+						phone = phone_no_ext + " ext " + ext;
+				}
+	
+				var zip = $("#new_empl_zip").val().trim();
+				if (zip === undefined)
+					zip = "";
+	
+				var valid = true;
+				if (phone_no_ext.length < 14 && phone.length > 0 && $("#new_empl_ph_format").val() === "United States") {
+					var $type = $("#new_empl_phone");
+					prev_bg = $type.css("background-color");
+					$type.animate({ "background-color": "yellow" }, 500).animate({ "background-color": prev_bg }, 500);
+					valid = false;
+				}
+				if (zip !== "" && zip.length !== 5 && zip.length !== 12) {
+					var $zip = $("#new_empl_zip");
+					prev_bg = $zip.css("background-color");
+					$zip.animate({ "background-color": "yellow" }, 500).animate({ "background-color": prev_bg }, 500);
+					valid = false;
+				}
+	
+				if (valid) {
+	
+					var addr1 = $("#new_empl_street1").val();
+					if (addr1 === undefined)
+						addr1 = "";
+					var addr2 = $("#new_empl_street2").val();
+					if (addr2 === undefined)
+						addr2 = "";
+					var city = $("#new_empl_city").val();
+					if (city === undefined)
+						city = "";
+					var state = $("#new_empl_state").val();
+					if (state === undefined)
+						state = "";
+					var country = $("#new_empl_country").val();
+					if (country === undefined)
+						country = "";
+					var county = $("#new_empl_county").val();
+					if (county === undefined)
+						county = "";
+					var contact = $("#new_empl_contact").val();
+					if (contact === undefined)
+						contact = "";
+	
+					var emp = {
+						"NAME": name,
+						"ALIAS":"",
+						"ZIP": zip,
+						"ADDR1": addr1,
+						"ADDR2": addr2,
+						"CITY": city,
+						"STATE": state,
+						"PHONE": phone,
+						"COUNTRY": country,
+						"COUNTY": county,
+						"CONTACT": contact,
+						"ID": 0
+					};
+					$("#employername").val(emp.NAME);
+					$("#employerzip").val(emp.ZIP);
+					$("#employerstreetaddress1").val(emp.ADDR1);
+					$("#employerstreetaddress2").val(emp.ADDR2);
+					$("#employercity").val(emp.CITY);
+					$("#employerstate").val(emp.STATE);
+					$("#employerphone").val(emp.PHONE);
+					$("#employer_search").dialog("close");
+					DataHandler.SetEmployer(emp);
+				}
+			}
+		},
+		// Inserts data into list of employers
+		SetCurrentEmployerList: function (employer_list) {
+			employers = JSON.parse(employer_list).RECORD_DATA.ORGS;
+			var emp_html = [];
+			if (employers.length > 0) {
+				$("#emp_ok").removeAttr("disabled");
+				emp_html.push("<div class='employer_search_navbar'>");
+				emp_html.push("<span class='employer_navbar_arrow' onclick='EmployerSearchMenu.EmployerSearchAccordion(1);' title='Go to the first page'>&#8606;</span>");
+				emp_html.push("<span class='employer_navbar_arrow' onclick='EmployerSearchMenu.EmployerSearchPrev();' title='Go to the previous page'>&#8592;</span>");
+				emp_html.push("<span id='employer_srch_count'>Displaying 1-10 of " + employers.length + " employers</span>");
+				emp_html.push("<span class='employer_navbar_arrow' onclick='EmployerSearchMenu.EmployerSearchNext();' title='Go to the next page'>&#8594;</span>");
+				emp_html.push("<span class='employer_navbar_arrow' onclick='EmployerSearchMenu.EmployerSearchLast();' title='Go to the last page'>&#8608</span></div>");
+				emp_html.push("<div class='employers_list'>");
+				var new_employers = [];
+				for (var i = 0; i < employers.length; i++) { 
+					new_employers.push(employers[i]);
+					emp_html.push("<h2>" + employers[i].NAME, "</h2>");
+					emp_html.push("<div title='Doubleclick or press enter to select an address'>");
+					emp_html.push("<ul class='emp_addr_list'>");
+					var addresses = [];
+					var address_list = [];
+					for (var addrs = 0; addrs < employers[i].ADDRESS_SIZE; addrs++){
+						var address = ["<li class='emp_addr_item'>"];
+						var strt = "";
+						if (employers[i].ADDRESSES[addrs].ADDR1 !== "") 
+							strt = employers[i].ADDRESSES[addrs].ADDR1;
+						if (employers[i].ADDRESSES[addrs].ADDR2 !== "")
+							strt += " " + employers[i].ADDRESSES[addrs].ADDR2;
+						if (strt !== "")
+							address.push(strt + ", ");
+						if (employers[i].ADDRESSES[addrs].CITY !== "")
+							address.push(employers[i].ADDRESSES[addrs].CITY + ", ");
+						if (employers[i].ADDRESSES[addrs].STATE !== "")
+							address.push(employers[i].ADDRESSES[addrs].STATE);
+						if (employers[i].ADDRESSES[addrs].ZIP !== "")
+							address.push(" " + employers[i].ADDRESSES[addrs].ZIP);
+						if (employers[i].ADDRESSES[addrs].PHONE !== "")
+							address.push(". Phone:" + employers[i].ADDRESSES[addrs].PHONE);
+						address.push("</li>");
+						var address_str = address.join('');
+						if (addresses.indexOf(address_str) < 0){
+							emp_html.push(address_str);
+							addresses.push(address_str);
+							address_list.push(employers[i].ADDRESSES[addrs]);
+						}
+					} 
+					new_employers[i].ADDRESSES = address_list;
+					emp_html.push("</ul></div>");
+				}
+				emp_html.push("</div>");
+				employers = new_employers; 
+			}
+			else // no data
+				emp_html.push("No results found.");
+			employer_search_total_records = employers.length;
+			employer_search_page_number = 1;
+			$("#employer_search_display").html(emp_html.join(''));
+			$("#employer_search_display .employers_list")
+				.on("keyup", "h2, div", function (e) {
+					if (e.which === 13)
+						EmployerSearchMenu.InsertEmployer();
+				})
+				.on("dblclick", "h2, div", function () {
+					EmployerSearchMenu.InsertEmployer();
+				})
+				.accordion({
+					heightStyle: "content"
+				});
+			$("ul.emp_addr_list li").on("click", function(){
+				$("ul.emp_addr_list li").removeClass("selected");
+				$(this).addClass("selected");
+			});
+			$(".employers_list h2").click(function(){ 
+				$(this).next("div").find("li:first-child").click();
+			});
+			EmployerSearchMenu.EmployerSearchAccordion(1);
+			WaitScreen.Stop("Getting employer data");
+		},
+		CloseEmployerSearch: function () {
+			$("#employer_search").dialog("close");
+		},
+		// searches for employer data if the first tab is selected, otherwise it inserts the new employer
+		DoEmployerSearch: function () {
+			var tabs = $(".employer_search_tabs").tabs("option", "active");
+			if (tabs === 0) {
+				WaitScreen.Start("Getting employer data");
+				var name = $("#employer_name_search").val();
+				if (name === undefined)
+					name = "";
+				var alias = $("#employer_alias_search").val();
+				if (alias === undefined)
+					alias = "";
+				var zip = $("#employer_zipcode_search").val();
+				if (zip === undefined)
+					zip = "";
+				if (name !== "" || alias !== "" || zip !== "")
+					DataHandler.GetEmployerData(name, alias, zip, EmployerSearchMenu.SetCurrentEmployerList);
+				else
+					WaitScreen.Stop("Getting employer data");
+			}
+			else {
+				EmployerSearchMenu.InsertEmployer();
+				$("#emp_ok").attr("disabled", "disabled");
+			}
+		},
+		// ensures that only a set number of records appears on the page at a time.
+		EmployerSearchAccordion: function (page) {
+			var headers = $("#employer_search_display h2");
+			employer_search_total_pages = 0;
+			employer_search_page_number = page;
+			var first = (page * employer_search_multiple) - employer_search_multiple + 1;
+			var last = page * employer_search_multiple;
+			for (var i = 0; i < headers.length; i++) {
+				if (i + 1 <= last && i + 1 >= first)
+					$(headers[i]).show();
+				else
+					$(headers[i]).hide();
+				if (i % 10 === 0)
+					employer_search_total_pages++;
+			}
+			$(headers[(page * employer_search_multiple) - employer_search_multiple]).click();
+			$(window).trigger("resize");
+
+			if (last > employer_search_total_records)
+				last = employer_search_total_records;
+			$("#employer_srch_count").html("Displaying " + first + "-" + last + " of " + employer_search_total_records + " employers");
+			$("#employer_search_display .employers_list").accordion("refresh");
+		},
+		// goes to first page of search results
+		EmployerSearchFirst: function(){
+			EmployerSearchMenu.EmployerSearchAccordion(1);
+		},
+		// goes to previous employer result page if it's not already on the first one
+		EmployerSearchPrev: function () {
+			if (employer_search_page_number > 1) {
+				EmployerSearchMenu.EmployerSearchAccordion(employer_search_page_number - 1);
+			}
+		},
+		// goes to next employer result page if it's not already on the last one
+		EmployerSearchNext: function () {
+			if (employer_search_page_number < employer_search_total_pages) {
+				EmployerSearchMenu.EmployerSearchAccordion(employer_search_page_number + 1);
+			}
+		},
+		// goes to the last page of search results
+		EmployerSearchLast: function () {
+			EmployerSearchMenu.EmployerSearchAccordion(employer_search_total_pages);
+		}
+	};
+}();
