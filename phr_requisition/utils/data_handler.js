@@ -163,24 +163,7 @@ var DataHandler = function () {
             req.onreadystatechange = function () { 
                 if (req.readyState === 4 && req.status === 200) {
                     try{ 
-                        var d_end = new Date();
-                        var d_execution_time = d_end.getTime() - d_start.getTime();
-                        log = new XMLCclRequest();
-                        var j_obj = JSON.parse(req.responseText);
-                        var record_count;
                         
-                        var status = j_obj.RECORD_DATA.STATUS_DATA.STATUS; 
-                        try {
-                            record_count = j_obj.RECORD_DATA.QUAL_CNT;
-                        }
-                        catch(e){ 
-                            record_count = 0; 
-                        }
-                        var arg = ["^MINE^", "^" + program_name + "^", "^" + mpage_name + "^", "^" + status + "^"];
-                        arg.push("^" + params.join('|').replace(/\^/g, "") + "^");
-                        arg.push("^" + d_execution_time + "^", "^" + record_count + "^","^" + DataHandler.GetArupId() + "^");  
-                        log.open("GET", "1_ARUP_InsMpageAdtLog", true);
-                        log.send(arg.join(','));
                     }
                     catch(e){ }
                     if (call_back){ 
