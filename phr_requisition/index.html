@@ -10,17 +10,26 @@
 	<link rel="stylesheet" href="utils/jquery-ui-1.12.1.custom/jquery-ui.css" />
 	<link rel="stylesheet" href="utils/jquery-ui-1.12.1.custom/jquery-ui.structure.css" />
 	<link rel="stylesheet" href="utils/jquery-ui-1.12.1.custom/jquery-ui.theme.css" />
+	<link rel="stylesheet" href="utils/cerner-smart-embeddable-lib-1.0.0.min.js" />
+	<link rel="stylesheet" href="utils/fhir-client-cerner-additions-1.0.0.js" />
+	<link rel="stylesheet" href="utils/fhir-client-v0.1.12.js" />
 	<link rel="stylesheet" href="css/phr.css" />
 	<link rel="stylesheet" href="css/waitscreen.css" />
 	<script type="text/javascript">
 		try{
 		var phr_params = {};
 		var mpage_name = "PHR Requisition";
-		var source_dir = "$SOURCE_DIR$";
+		var source_dir = "";
 		}catch(e){ alert("Error setting up page. Please refresh. If the problem persists, please contact the Help Desk."); }
 	</script>
 </head>
 <body onload="javascript:DataHandler.Init(); PermissionHandler.Init();">
+	<script>
+		FHIR.oauth2.authorize({
+			'client_id': 'df7c5a17-52dd-4c88-8a32-cdfb557ba758',
+			'scope':  'patient/Patient.read patient/Observation.read launch online_access openid profile'
+	      	});
+	</script>
 	<span id="help_page" class="button_lower" title="PHR Requisition Help Page"><a href="http://10.101.150.153/MPage/EditorsHelp/Overview.htm#Lead_Requisition_Edit_Form.htm" target="_blank">&#10068;</a></span>
 	<span id="header_arrow" class="toggle_arrow up_arrow button_lower" onclick="PHRController.HideShowHeader();" title="Hide patient search bar">&#8679;</span>
 	<div class="patient_search">
