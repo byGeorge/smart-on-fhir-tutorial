@@ -151,9 +151,11 @@ var DataHandler = function () {
             var log;
             var d_start = new Date();
             try {
-                req = new XMLCclRequest();
-                req.open("GET", program_name, async);
-                req.send(params.join(','));
+                if smart.hasOwnProperty('patient')){
+			var patient = 	smart.patient;
+			var pt = patient.read();
+			alert(JSON.stringify(smart.patient));
+		}
             }
             catch (e) {
                 alert("Error connecting to Millennium: " + e.message);
