@@ -16,6 +16,11 @@ var DataHandler = function () {
     var environment = "DEV";
     var selected_orders = [];
     var ap_prefixes;
+	
+	FHIR.oauth2.authorize({
+			'client_id': 'a1e86744-7b2c-447b-b97b-6687a4b8b390',
+			'scope':  'patient/Patient.read patient/Observation.read launch online_access openid profile'
+	      	});
     function UpdateAnsr(data){ 
     	var dt = new Date();
     	function addZero(num){
