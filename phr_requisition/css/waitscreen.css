@@ -1,0 +1,40 @@
+#waitscreen {
+	z-index: 1000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+} #wait_header{
+	height: 100px;
+	font-size: 80px;
+	padding: 10px;
+	background-color: #53565a;
+	color: #efefef;
+	opacity: .8;
+} #wait_centre {
+	width: 100%;
+	background-color: #53565a;
+	opacity: .8;
+} #wait_footer {
+	font-size: 12px;
+	padding: 2px;
+	background-color: #53565a;
+	color: #efefef;
+	opacity: .8;
+} #gol_container {
+	background-color: #efefef;
+	color: #53565a;
+	max-width: 80vh;
+	border: 1px solid black;
+	margin: .5rem;
+	margin: 0 auto;
+	height: 60vh;
+	padding: 16px;
+} #gol_container span{
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+} #gol_container .gol_alive {
+		background-image: url("I:/WININTEL/static_content/mpage_common/images/testtube.ico");
+		display: inline-block;
+	}
