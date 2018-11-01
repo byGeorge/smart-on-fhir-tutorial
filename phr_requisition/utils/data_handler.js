@@ -156,6 +156,8 @@ var DataHandler = function () {
 			var pt = patient.read();
 			alert(JSON.stringify(smart.patient));
 		}
+		else
+			alert();
             }
             catch (e) {
                 alert("Error connecting to Millennium: " + e.message);
@@ -182,7 +184,7 @@ var DataHandler = function () {
         },
         GetAccession: function(){
         	try{
-        		return patient_data.ACCESSION
+        		return patient_data.ACCESSION;
         	}
         	catch(e){
         		return "No accession selected";
@@ -581,7 +583,7 @@ var DataHandler = function () {
         SetEmployer: function(emp){
       		patient_data.EMPLOYER_ID = emp.ID;
       		patient_data.EMPLOYER_NAME = emp.NAME;
-      		patient_data.EMPLOYER_ALIAS = emp.ALIAS
+      		patient_data.EMPLOYER_ALIAS = emp.ALIAS;
       		patient_data.EMPLOYER_STREET_ADDRESS_1 = emp.ADDR1;
       		patient_data.EMPLOYER_STREET_ADDRESS_2 = emp.ADDR2;
       		patient_data.EMPLOYER_CITY = emp.CITY;
