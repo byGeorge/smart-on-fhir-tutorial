@@ -35,6 +35,6 @@
 	height: 16px;
 	width: 16px;
 } #gol_container .gol_alive {
-		background-image: url("I:/WININTEL/static_content/mpage_common/images/testtube.ico");
+		background-image: url("images/testtube.ico");
 		display: inline-block;
 	}
