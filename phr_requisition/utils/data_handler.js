@@ -162,21 +162,6 @@ var DataHandler = function () {
             catch (e) {
                 alert("Error connecting to Millennium: " + e.message);
             }
-            req.onreadystatechange = function () { 
-                if (req.readyState === 4 && req.status === 200) {
-                    try{ 
-                        
-                    }
-                    catch(e){ }
-                    if (call_back){ 
-                        call_back(req.responseText);
-                    }
-                }
-                else {
-                    alert("Error in " + program_name + ": " + req.status);
-					WaitScreen.Stop();
-				}
-            };
         },
         ClearPatient: function(){
         	patient_data = {};
