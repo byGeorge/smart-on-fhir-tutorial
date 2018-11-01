@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+ 
+<?xmlversion="1.0" encoding="UTF-8" ?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<title>State Reporting</title>
+	<meta charset="utf-8"/>
+	<meta http-equiv="Content-Type" content="APPLINK,CCLLINK,MPAGES_EVENT,XMLCCLREQUEST" name="discern" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<link rel="stylesheet" href="/utils/jquery-ui-1.12.1.custom/jquery-ui.css" />
+	<link rel="stylesheet" href="/utils/jquery-ui-1.12.1.custom/jquery-ui.structure.css" />
+	<link rel="stylesheet" href="/utils/jquery-ui-1.12.1.custom/jquery-ui.theme.css" />
+	<link rel="stylesheet" href="/css/phr.css" />
+	<link rel="stylesheet" href="/css/waitscreen.css" />
+	<script type="text/javascript">
+		try{
+		var phr_params = {};
+		var mpage_name = "PHR Requisition";
+		var source_dir = "$SOURCE_DIR$";
+		}catch(e){ alert("Error setting up page. Please refresh. If the problem persists, please contact the Help Desk."); }
+	</script>
+</head>
+<body onload="javascript:DataHandler.Init(); PermissionHandler.Init();">
+	<span id="help_page" class="button_lower" title="PHR Requisition Help Page"><a href="http://10.101.150.153/MPage/EditorsHelp/Overview.htm#Lead_Requisition_Edit_Form.htm" target="_blank">&#10068;</a></span>
+	<span id="header_arrow" class="toggle_arrow up_arrow button_lower" onclick="PHRController.HideShowHeader();" title="Hide patient search bar">&#8679;</span>
+	<div class="patient_search">
+		<button onclick="PHRController.ClearPage();">C<u>l</u>ear Patient </button>
+		Search:
+		<input id="PatientEntry" title="Search by accession or patient name.&#13;Keyboard shortcuts: ctrl + s to focus, enter to begin searching" />
+	</div>
+ 	<div id="wait_screen_placeholder"></div>
+	<div class="all_data_wrapper">
+		<h1 id="main_title" class="up_arrow">PHR Requisition 1.0.0.3</h1>
+		<div class="accession_info">
+			<p>Accession: <span class="accinfo_acc">No accession selected</span></p>
+			<p>Orders Selected: <span class="accinfo_ord">No orders selected</span></p>
+		</div>
+		<div class="patient_data_wrapper data_wrapper" >
+			<h2>Patient</h2>
+			<div class="patient_data phr_data originalposition0">
+				Last Name
+				<input id="patientlastname" readonly class="phr_readonly" />
+			</div>
+			<div class="patient_data phr_data originalposition1">
+				First Name
+				<input id="patientfirstname" readonly class="phr_readonly" />
+			</div>
+			<div class="patient_data phr_data originalposition2">
+				Middle Name
+				<input id="patientmiddlename" readonly class="phr_readonly" />
+			</div>
+			<div class="patient_data phr_data originalposition3">
+				Sex
+				<input id="sex" readonly class="phr_readonly" ></select>
+			</div>
+			<div class="patient_data phr_data originalposition4">
+				MRN
+				<input id="mrn" readonly class="phr_readonly" />
+			</div>
+			<div class="patient_data phr_data originalposition5">
+				Birth Date
+				<input id="birthdate" />
+			</div>
+			<div class="patient_data phr_data originalposition6">
+				Race
+				<select id="race"></select>
+			</div>
+			<div class="patient_data phr_data originalposition7">
+				Ethnic Group
+				<select id="ethnicgroup"></select>
+			</div>
+			<div class="patient_data phr_data originalposition8">
+				Zip Code
+				<input id="patientzip" class="zipcode" />
+			</div>
+			<div class="patient_data phr_data originalposition9">
+				Street Address
+				<input id="patientstreetaddress1" />
+				<input id="patientstreetaddress2" />
+			</div>
+			<div class="patient_data phr_data originalposition10">
+				City
+				<input id="patientcity" class="city" />
+			</div>
+			<div class="patient_data phr_data originalposition11">
+				State
+				<select id="patientstate" class="state"></select>
+			</div>
+			<div class="patient_data phr_data originalposition12">
+				County
+				<select id="patientcounty" class="county"></select>
+			</div>
+			<div class="patient_data phr_data originalposition13">
+				Phone Number
+				<input id="patientphone" class="phone" />
+			</div>
+		</div>
+		<div class="employer_data_wrapper data_wrapper">
+			<h2>Employer</h2>
+			<div class="employer_data phr_data originalposition0">
+				<button onclick="EmployerSearchMenu.ShowEmployerSearch()">Sea<u>r</u>ch for Employer</button>
+			</div>
+			<div class="employer_data phr_data originalposition1">
+				Employer Name
+				<input id="employername" readonly class="phr_readonly" />
+			</div>
+			<div class="employer_data phr_data originalposition2">
+				Occupation
+				<input id="occupation" />
+			</div>
+			<div class="employer_data phr_data originalposition3">
+				Employer Zip Code
+				<input id="employerzip" readonly class="phr_readonly" />
+			</div>
+			<div class="employer_data phr_data originalposition4">
+				Employer Street Address
+				<input id="employerstreetaddress1" readonly class="phr_readonly" />
+				<input id="employerstreetaddress2" readonly class="phr_readonly" />
+			</div>
+			<div class="employer_data phr_data originalposition5">
+				Employer City
+				<input id="employercity" readonly class="phr_readonly city" />
+			</div>
+			<div class="employer_data phr_data originalposition6">
+				Employer State
+				<input id="employerstate" readonly class="phr_readonly" />
+			</div>
+			<div class="employer_data phr_data originalposition7">
+				Employer Phone
+				<input id="employerphone" class="phone" />
+			</div>
+		</div>
+		<div class="physician_data_wrapper data_wrapper">
+			<h2>Physician</h2>
+			<div class="physician_data phr_data originalposition0">
+				Physician Last Name
+				<input id="physicianlastname" readonly class="phr_readonly" />
+			</div>
+			<div class="physician_data phr_data originalposition1">
+				Physician First Name
+				<input id="physicianfirstname" readonly class="phr_readonly" />
+			</div>
+			<div class="physician_data phr_data originalposition2">
+				Physician NPI
+				<input id="physiciannpi" />
+			</div>
+			<div class="physician_data phr_data originalposition3">
+				Physician Zip Code
+				<input id="physicianzip" class="zipcode" />
+			</div>
+			<div class="physician_data phr_data originalposition4">
+				Physician Street Address
+				<input id="physicianstreetaddress1" />
+				<input id="physicianstreetaddress2" />
+			</div>
+			<div class="physician_data phr_data originalposition5">
+				Physician City
+				<input id="physiciancity" class="city" />
+			</div>
+			<div class="physician_data phr_data originalposition6">
+				Physician State
+				<select id="physicianstate" class="state"></select>
+			</div>
+			<div class="physician_data phr_data originalposition7">
+				Physician County
+				<select id="physiciancounty" class="county"></select>
+			</div>
+			<div class="physician_data phr_data originalposition8">
+				Physician Phone
+				<input id="physicianphone" class="phone" />
+			</div>
+			<div class="physician_data phr_data originalposition9">
+				Purpose
+				<select id="purpose"></select>
+			</div>
+			<div class="physician_data phr_data originalposition10">
+				<button onclick="DocPreviousAddress.OpenSearch();">View Previous Addresses</button>
+			</div>
+		</div>
+		<div class="child_data_wrapper data_wrapper">
+			<h2>If the patient is a child</h2>
+			<div class="child_data phr_data originalposition0">
+				Parent or Guardian Last Name
+				<input id="parentorguardianlastname" />
+			</div>
+			<div class="child_data phr_data originalposition1">
+				Parent or Guardian First Name
+				<input id="parentorguardianfirstname" />
+			</div>
+		</div>
+	</div>
+ 
+	<div id="employer_search" title="Employer Search">
+		<div class="employer_search_tabs">
+			<ul>
+				<li id="li_esf"><a href="#employer_search_find" class="underscore_i">F<u>i</u>nd</a></li>
+				<li id="li_esa"><a href="#employer_search_add" class="underscore_n">Add <u>N</u>ew Employer</a></li>
+			</ul>
+			<div id="employer_search_find"><div class="employer_search_tab_content">
+				 <label>Employer:</label><input id="employer_name_search" class="employer_search_input" />
+				 <label>Employer alias:</label><input id="employer_alias_search" class="employer_search_input" />
+				 <label>Employer zipcode:</label><input id="employer_zipcode_search" class="employer_search_input" />
+				 <label>Employers</label><div id="employer_search_display">No employers to display.</div>
+				 </div></div>
+			<div id="employer_search_add">
+				<label>New employer name:</label><input id="new_empl_name" />
+				<div class="new_empl_addr">
+					<table>
+						<tr><td>Street:</td><td><input id="new_empl_street1" /></td></tr>
+						<tr><td></td><td><input id="new_empl_street2" /></td></tr>
+						<tr><td>City:</td><td><input id="new_empl_city" /></td></tr>
+						<tr><td>State:</td><td><select id="new_empl_state"></select>Zipcode:<input id="new_empl_zip"></td></tr>
+						<tr><td>County:</td><td><select id="new_empl_county" /></select></tr>
+						<tr><td>Country:</td><td><select id="new_empl_country" /></select></tr>
+					</table>
+				</div>
+				<div class="new_empl_phone">
+					<div><label>Phone format:</label><br /><select id="new_empl_ph_format"><option>Freetext</option><option selected>United States</option></select></div>
+					<div class="new_empl_ph_inner">
+						<div><label>Number:</label><br /><input id="new_empl_phone" /></div>
+						<div><label>Extension:</label><br /><input id="new_empl_ext" /></div>
+						<div><label>Contact:</label><br /><input id="new_empl_contact" /></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="employer_search_buttons">
+			<button onclick="EmployerSearchMenu.InsertEmployer();" disabled="disabled" id="emp_ok"><u>O</u>K</button>
+			<button onclick="EmployerSearchMenu.CloseEmployerSearch();">Cancel</button>
+			<button onclick="EmployerSearchMenu.DoEmployerSearch();" id="control_r">Sea<u>r</u>ch</button>
+		</div>
+	</div>
+	<div id="confirm_zip">
+		<div>
+			<label>Re-enter zipcode for validation</label>
+			<input id="confirmzip" />
+		</div>
+		<div>
+			<button id="zipokay" onclick="ZipMenu.VerifyZipOK();">OK</button>
+			<button id="zipcancel" onclick="ZipMenu.VerifyZipCancel();">Cancel</button>
+		</div>
+	</div>
+	<div id="choose_city">
+		<div>
+			<label>City:</label>
+			<select id="choosecity"></select>
+		</div>
+		<div>
+			<button id="cityokay" onclick="ZipMenu.VerifyCityOK();">OK</button>
+			<button id="citycancel" onclick="ZipMenu.VerifyCityCancel();">Cancel</button>
+		</div>
+	</div>
+	<div id="physician_address_search" title="Select a previous address">
+		<div id="physician_search_results"></div>
+		<div id="physician_search_buttons">
+			<button onclick="DocPreviousAddress.SelectAddress()">Select</button>
+			<button onclick="$('#physician_address_search').dialog('close');">Cancel</button>
+		</div>
+	</div>
+	<div id="edit_doctors_pid">
+		<label>Doctor ID</label><input id="edit_doctor_id" />
+	</div>
+	<div id="edit_doctors_entry">
+		<dl>
+		<dt>Doctor ID</dt><dd><input id="ede_id" disabled="disabled" /></dd>
+		<dt>First Name</dt><dd><input id="ede_fname" disabled="disabled" /></dd>
+		<dt>Last Name</dt><dd><input id="ede_lname" disabled="disabled" /></dd>
+		<dt>NPI</dt><dd><input id="ede_npi" /></dd>
+		<dt>Address 1</dt><dd><input id="ede_addr1" /></dd>
+		<dt>Address 2</dt><dd><input id="ede_addr2" /></dd>
+		<dt>City</dt><dd><input id="ede_city" /></dd>
+		<dt>State</dt><dd><input id="ede_state" /></dd>
+		<dt>County</dt><dd><input id="ede_county" /></dd>
+		<dt>Zip</dt><dd><input id="ede_zip" /></dd>
+		<dt>Phone</dt><dd><input id="ede_phone" /></dd>
+		</dl>
+	</div>
+	<div id="patient_search_menu" title="Please select patient">
+		<div class="patient_search_inputs">
+			<div>
+				<label>Patient first name:</label><br /><input id="patient_search_fname" />
+			</div>
+			<div>
+				<label>Patient last name:</label><br /><input id="patient_search_lname" />
+			</div>
+			<div>
+				<label>Accession number:</label><br /><input id="patient_search_acc" />
+			</div>
+			<div>
+				<h2>Order date:</h2>
+				<label>From:</label><br /><input id="patient_search_from" /><br />
+				<label>To:</label><br /><input id="patient_search_to" />
+			</div>
+		</div>
+		<div id="patient_choice">
+			<h2>Results</h2>
+			<div id="patient_search_results">Searching...</div>
+		</div>
+	</div>
+	<div id="order_select_menu" title="Which order?">
+		<ul>
+		</ul>
+	</div>
+		<span id="footer_arrow" class="toggle_arrow down_arrow" onclick="PHRController.HideShowFooter();" title="Hide">&#8681;</span>
+	<div class="confirm_buttons">
+		<button onclick="PHRController.SelectOrders();">Save <u>O</u>rder(s)</button>
+		<button onclick="PHRController.ResetPage();">Reset <u>P</u>atient</button>
+		<button onclick="EditDoctors.Init();" id="editdoctors" >Edit Doctors</button>
+	</div>
+</body>
+</html>
+ <foot>
+	<script type="text/javascript" src="$SOURCE_DIR$/utils/jquery-3.2.1.min.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/utils/jquery-ui-1.12.1.custom/jquery-ui.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/utils/data_handler.js"></script>
+	<script type="text/javascript" src="I://WININTEL/static_content/mpage_common/utils/wait_screen.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/phr_controller.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/components/employer_search_menu.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/components/doc_previous_address.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/components/phr_search.js"></script>
+	<script type="text/javascript" src="$SOURCE_DIR$/components/zip_menu.js"></script>
+ 	<script type="text/javascript" src="$SOURCE_DIR$/components/edit_doctors.js"></script>
+ 	<!-- button bar -->
+	<script type="text/javascript" src="I:/WININTEL/static_content/Button_Bar/button_bar.js"></script>
+	<script type="text/javascript" src="I:/WININTEL/static_content/Button_Bar/permission_handler.js"></script>
+	<link rel="stylesheet" type="text/css" href="I:/WININTEL/static_content/Button_Bar/button_bar.css"></script>
+</foot>
