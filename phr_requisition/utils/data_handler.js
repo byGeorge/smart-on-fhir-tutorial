@@ -163,6 +163,7 @@ var DataHandler = function () {
             catch (e) {
                 alert("Error connecting to Millennium: " + e.message);
             }
+	    call_back(null);
         },
         ClearPatient: function(){
         	patient_data = {};
