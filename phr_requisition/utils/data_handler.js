@@ -1,3 +1,20 @@
+(function(window) {
+	function onReady(smart){
+		try {
+			if (smart.hasOwnProperty('patient')){
+				var patient = 	smart.patient;
+				var pt = patient.read();
+				alert(JSON.stringify(smart.patient));
+			}
+			else
+				alert();
+		    }
+		    catch (e) {
+			alert("Error connecting to FHIR: " + e.message);
+		    }
+		}
+	}
+})(window);
 
 var DataHandler = function () {
 	var predata;
@@ -159,13 +176,7 @@ var DataHandler = function () {
             var log;
             var d_start = new Date();
             try {
-                if (smart.hasOwnProperty('patient')){
-			var patient = 	smart.patient;
-			var pt = patient.read();
-			alert(JSON.stringify(smart.patient));
-		}
-		else
-			alert();
+                alert(program_name);
             }
             catch (e) {
                 alert("Error connecting to Millennium: " + e.message);
