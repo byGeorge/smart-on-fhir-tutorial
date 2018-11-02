@@ -144,7 +144,6 @@ var DataHandler = function () {
         Init: function () {
             WaitScreen.Start("Setting up page");
 	    var scope = 'patient/Patient.read patient/Observation.read patient/Encounter.read patient/RelatedPerson.read'
-	    		+ ' user/Encounter.read user/Patient.read user/RelatedPerson.read user/Patient.write'
 	    		+ ' launch online_access openid profile'
 	    FHIR.oauth2.authorize({
 		'client_id': 'a1e86744-7b2c-447b-b97b-6687a4b8b390',
