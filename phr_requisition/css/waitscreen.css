@@ -35,6 +35,6 @@
 	height: 16px;
 	width: 16px;
 } #gol_container .gol_alive {
-		background-image: url("http://bygeorge.github.io/images/testtube.ico");
+		background-image: url("https://bygeorge.github.io/smart-on-fhir-tutorial/phr_requisition/images/testtube.ico");
 		display: inline-block;
 	}
