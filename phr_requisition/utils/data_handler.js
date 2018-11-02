@@ -143,14 +143,14 @@ var DataHandler = function () {
     return {
         Init: function () {
             WaitScreen.Start("Setting up page");
-	    if (!window.initialised_fhir) {
+	    var idx = (window.location.href).indexOf("&error=");
+	    if (idx < 0) {
 		    var scope = 'patient/Patient.read patient/Observation.read patient/Encounter.read patient/RelatedPerson.read'
 				+ ' launch online_access openid profile'
 		    FHIR.oauth2.authorize({
 			'client_id': 'a1e86744-7b2c-447b-b97b-6687a4b8b390',
 			'scope':  scope
 		    });
-		    window.initialised_fhir = true;
 	    }
             DataHandler.CCLRequest("1_arup_mp_get_environment", ["^MINE^"], true, DataHandler.SetUserID);
             DataHandler.CCLRequest("1_arup_mp_get_ap_prefixes",["^MINE^"], true, DataHandler.SetAPPrefixes);
