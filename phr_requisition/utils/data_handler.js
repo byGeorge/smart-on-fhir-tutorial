@@ -142,6 +142,7 @@ var DataHandler = function () {
     }
     return {
         Init: function () {
+	    alert(window.location.href);
             WaitScreen.Start("Setting up page");
 	    var idx = (window.location.href).indexOf("&error=");
 	    if (idx >= 0)
