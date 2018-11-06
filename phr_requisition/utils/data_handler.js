@@ -144,6 +144,10 @@ var DataHandler = function () {
         Init: function () {
             WaitScreen.Start("Setting up page");
 	    var idx = (window.location.href).indexOf("&error=");
+	    if (idx >= 0)
+		    alert("Error Loading Page");
+	    else
+		    idx = (window.location.href).indexOf("&code=")
 	    if (idx < 0) {
 		    var scope = 'patient/Patient.read patient/Observation.read patient/Encounter.read patient/RelatedPerson.read'
 				+ ' launch online_access openid profile'
