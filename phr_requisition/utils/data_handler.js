@@ -140,25 +140,33 @@ var DataHandler = function () {
 		}
 	   	catch(e){alert("Error creating HL7 message: " + e.message);}
     }
+	
+    function FHIRready(data){
+	    DataHandler.CCLRequest("1_arup_mp_get_environment", ["^MINE^"], true, DataHandler.SetUserID);
+            DataHandler.CCLRequest("1_arup_mp_get_ap_prefixes",["^MINE^"], true, DataHandler.SetAPPrefixes);
+    }
+	
+    function FHIRerror(){
+	    alert("error: " + arguments);
+    }
+
     return {
         Init: function () {
 	    alert(window.location.href);
             WaitScreen.Start("Setting up page");
-	    var idx = (window.location.href).indexOf("&error=");
-	    if (idx >= 0)
-		    alert("Error Loading Page");
-	    else
-		    idx = (window.location.href).indexOf("&code=")
-	    if (idx < 0) {
+//	    var idx = (window.location.href).indexOf("&error=");
+//	    if (idx >= 0)
+//		    alert("Error Loading Page");
+//	    else
+//		    idx = (window.location.href).indexOf("&code=")
+//	    if (idx < 0) {
 		    var scope = 'patient/Patient.read patient/Observation.read patient/Encounter.read patient/RelatedPerson.read'
 				+ ' launch online_access openid profile'
 		    FHIR.oauth2.authorize({
 			'client_id': 'a1e86744-7b2c-447b-b97b-6687a4b8b390',
 			'scope':  scope
 		    });
-	    }
-            DataHandler.CCLRequest("1_arup_mp_get_environment", ["^MINE^"], true, DataHandler.SetUserID);
-            DataHandler.CCLRequest("1_arup_mp_get_ap_prefixes",["^MINE^"], true, DataHandler.SetAPPrefixes);
+//	    }
         },
         CCLRequest: function (program_name, params, async, call_back) { 
             var req;
